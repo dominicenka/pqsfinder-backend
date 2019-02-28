@@ -17,6 +17,7 @@ cors <- function(req, res) {
 #* Return the result of pqsfinder() ... example: http://localhost:8000/pqs?id=1
 #* @get /job/<id>
 function(id, res){
+  if (!file.exists(paste("../results/", id, ".fa", sep=""))) return(0);
   include_file(paste("../results/", id, ".fa", sep=""), res)
 }
 
@@ -33,27 +34,26 @@ function(opts, sequences) {
   maxNM <- as.integer(opts['maxNM'])
   maxND <- as.integer(opts['maxND'])
   strand <- as.character(opts['strand'])
-  ids <- ''
+  my_data <- read.delim("../pqsfinder-backend/config.txt")
+  id <- my_data[,1]
+  i<-0
   for(seqDnaString in sequences['dnaString'][,1]) {
+    i<-i+1
     pqs <- pqsfinder(DNAString(seqDnaString), strand=strand ,max_len=maxLength,
                      min_score=minScore, loop_min_len=minLL, loop_max_len=maxLL,
                      max_bulges=maxNB, max_mismatches=maxNM, max_defects=maxND
                      );
-    print(pqs)
-    my_data <- read.delim("../pqsfinder-backend/config.txt")
-    id <- my_data[,1]
-    writeLines(c(seqDnaString, length(pqs)), paste("../results/", id, ".fa", sep=""))
-    writeXStringSet(as(pqs, "DNAStringSet"), file=paste("../results/", id, ".fa", sep=""), format="fasta", append=TRUE)
-    ids <- c(ids, id)
-    id <- id + 1
-    write.table(id, file = "../pqsfinder-backend/config.txt", sep = "\t",
-                row.names = FALSE)
+    dnaset <- as(pqs, "DNAStringSet")
+    names(dnaset) <- sprintf("%s;%s", sequences['seqDescription'][i,1], names(dnaset))
+    write(c("*", seqDnaString, length(pqs)), file= paste("../results/", id, ".fa", sep=""),  append=TRUE)
+    writeXStringSet(dnaset, file=paste("../results/", id, ".fa", sep=""), format="fasta", append=TRUE)
   }
   for(seqDesc in sequences['seqDescription'][,1]) {
     print(seqDesc);
   }
-  cat('\n')
-  print(ids);
-  return(ids)
+  id <- id + 1
+  write.table(id, file = "../pqsfinder-backend/config.txt", sep = "\t",
+              row.names = FALSE)
+  return(id - 1)
 }
 
