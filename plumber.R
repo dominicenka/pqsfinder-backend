@@ -30,6 +30,8 @@ function(opts, sequences) {
   minScore <- as.integer(opts['minScore'])
   minLL <- as.integer(opts['minLL'])
   maxLL <- as.integer(opts['maxLL'])
+  minRL <- as.integer(opts['minRL'])
+  maxRL <- as.integer(opts['maxRL'])
   maxNB <- as.integer(opts['maxNB'])
   maxNM <- as.integer(opts['maxNM'])
   maxND <- as.integer(opts['maxND'])
@@ -39,9 +41,10 @@ function(opts, sequences) {
   i<-0
   for(seqDnaString in sequences['dnaString'][,1]) {
     i<-i+1
-    pqs <- pqsfinder(DNAString(seqDnaString), strand=strand ,max_len=maxLength,
-                     min_score=minScore, loop_min_len=minLL, loop_max_len=maxLL,
-                     max_bulges=maxNB, max_mismatches=maxNM, max_defects=maxND
+    pqs <- pqsfinder(DNAString(seqDnaString), strand = strand ,max_len = maxLength,
+                     min_score = minScore, loop_min_len = minLL, loop_max_len = maxLL,
+                     run_min_len = minRL, run_max_len = maxRL,
+                     max_bulges = maxNB, max_mismatches = maxNM, max_defects = maxND
                      );
     dnaset <- as(pqs, "DNAStringSet")
     names(dnaset) <- sprintf("%s;%s", sequences['seqDescription'][i,1], names(dnaset))
