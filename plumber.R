@@ -21,6 +21,20 @@ function(id, res){
   include_file(paste("../results/", id, ".fa", sep=""), res)
 }
 
+#* Return formals of pqsfinder... example: http://localhost:8000/formals
+#* @get /formals
+function(){
+   formals <- formals(pqsfinder)
+   formals[1] <- NULL;
+   return (formals)
+}
+
+#* Return current version of pqsfinder... example: http://localhost:8000/version
+#* @get /version
+function(){
+  return(as.character(packageVersion("pqsfinder")))
+}
+
 #* Get options and dna strings, return job ID ... example: 
 #* @param opts Options to configure algorithm
 #* @param sequences The data on which to look for quadruplexes
@@ -46,7 +60,9 @@ function(opts, sequences) {
                      run_min_len = minRL, run_max_len = maxRL,
                      max_bulges = maxNB, max_mismatches = maxNM, max_defects = maxND
                      );
+    print(pqs)
     dnaset <- as(pqs, "DNAStringSet")
+    print("setol dnaSet")
     names(dnaset) <- sprintf("%s;%s", sequences['seqDescription'][i,1], names(dnaset))
     write(c("*", seqDnaString, length(pqs)), file= paste("../results/", id, ".fa", sep=""),  append=TRUE)
     writeXStringSet(dnaset, file=paste("../results/", id, ".fa", sep=""), format="fasta", append=TRUE)
