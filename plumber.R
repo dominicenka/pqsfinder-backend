@@ -59,16 +59,17 @@ function(opts, sequences) {
                      min_score = minScore, loop_min_len = minLL, loop_max_len = maxLL,
                      run_min_len = minRL, run_max_len = maxRL,
                      max_bulges = maxNB, max_mismatches = maxNM, max_defects = maxND
-                     );
-    print(pqs)
-    dnaset <- as(pqs, "DNAStringSet")
-    print("setol dnaSet")
-    names(dnaset) <- sprintf("%s;%s", sequences['seqDescription'][i,1], names(dnaset))
-    write(c("*", seqDnaString, length(pqs)), file= paste("../results/", id, ".fa", sep=""),  append=TRUE)
-    writeXStringSet(dnaset, file=paste("../results/", id, ".fa", sep=""), format="fasta", append=TRUE)
-  }
-  for(seqDesc in sequences['seqDescription'][,1]) {
-    print(seqDesc);
+    )
+    if (length(pqs) == 0 ) {
+      info <- sprintf("%s", sequences['seqDescription'][i,1])
+      write(c("*", seqDnaString, length(pqs), info), file= paste("../results/", id, ".fa", sep=""),  append=TRUE)
+    }
+    else {
+      dnaset <- as(pqs, "DNAStringSet")
+      names(dnaset) <- sprintf("%s;%s", sequences['seqDescription'][i,1], names(dnaset))
+      write(c("*", seqDnaString, length(pqs)), file= paste("../results/", id, ".fa", sep=""),  append=TRUE)
+      writeXStringSet(dnaset, file=paste("../results/", id, ".fa", sep=""), format="fasta", append=TRUE)
+    }
   }
   id <- id + 1
   write.table(id, file = "../pqsfinder-backend/config.txt", sep = "\t",
