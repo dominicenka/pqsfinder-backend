@@ -133,6 +133,13 @@ function(opts, sequences) {
   job_dir <- get_job_dir_path(job_id)
   dir.create(job_dir)
   
+  max_size <- limits$max_sequence_len[2]
+  total_size <- sum(sapply(sequences$seq_string, nchar))
+  
+  if (total_size > max_size) {
+    stop(sprintf("The total size of the sequences is larger than %s nucleic acids", max_size))
+  }
+  
   for (i in seq_len(nrow(sequences))) {
     seq_string <- sequences$seq_string[[i]]
     call_args$subject <- tryCatch(DNAString(seq_string), error = function(e) RNAString(seq_string))
