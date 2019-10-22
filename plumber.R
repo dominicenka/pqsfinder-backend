@@ -89,7 +89,7 @@ validate_pqsfinder_opt_range <- function(opts, limits) {
 }
 
 #* Return the results of pqsfinder
-#* @get /job/<id>
+#* @get /api/job/<id>
 function(id, res) {
   res_file <- get_job_file_path(id)
   
@@ -101,21 +101,21 @@ function(id, res) {
 
 #* Return default pqsfinder parameters
 #* @serializer unboxedJSON
-#* @get /formals
+#* @get /api/formals
 function() {
   return(formals(pqsfinder)[-1])
 }
 
 #* Return pqsfinder limits
 #* @serializer unboxedJSON
-#* @get /limits
+#* @get /api/limits
 function() {
   return(pqsfinder_limits())
 }
 
 #* Return current version of pqsfinder
 #* @serializer unboxedJSON
-#* @get /version
+#* @get /api/version
 function() {
   return(as.character(packageVersion("pqsfinder")))
 }
@@ -123,7 +123,7 @@ function() {
 #* Get options and dna strings, return job ID ... example:
 #* @param opts Options to configure algorithm
 #* @param sequences The data on which to look for quadruplexes
-#* @post /analyze
+#* @post /api/analyze
 function(opts, sequences) {
   limits <- pqsfinder_limits()
   call_args <- validate_pqsfinder_opt_range(opts, limits)
