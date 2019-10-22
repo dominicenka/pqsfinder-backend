@@ -1,0 +1,14 @@
+[Unit]
+Description="pqsfinder backend instance %i"
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=/usr/bin/Rscript /srv/pqsfinder-backend/run.R %i
+WorkingDirectory=/srv/pqsfinder-backend
+User=www-data
+Group=www-data
+
+[Install]
+WantedBy=multi-user.target

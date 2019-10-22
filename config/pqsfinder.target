@@ -1,0 +1,7 @@
+[Unit]
+Description="pqsfinder backend pool"
+Requires=pqsfinder@0.service pqsfinder@1.service pqsfinder@2.service pqsfinder@3.service
+After=network.target
+
+[Install]
+WantedBy=multi-user.target
